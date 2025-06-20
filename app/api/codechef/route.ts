@@ -28,7 +28,9 @@ export async function GET(req: NextRequest) {
 
     // Assign stars based on rating
     let stars = "1⭐";
-    if (rating >= 2000) stars = "5⭐";
+    if (rating >= 2500) stars = "7⭐";
+    else if (rating >= 2200) stars = "6⭐";
+    else if (rating >= 2000) stars = "5⭐";
     else if (rating >= 1800) stars = "4⭐";
     else if (rating >= 1600) stars = "3⭐";
     else if (rating >= 1400) stars = "2⭐";

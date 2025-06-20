@@ -118,26 +118,56 @@ const Achievements = () => {
     ]);
 
     useEffect(() => {
+        // Fetch CodeChef data
+        const fetchCodeChefData = async () => {
+            try {
+                const res = await fetch('/api/codechef?username=bot_durgesh');
+                const json = await res.json();
+                setAchievements((prev) =>
+                    prev.map((ach) =>
+                        ach.title === 'CodeChef'
+                            ? {
+                                ...ach,
+                                rating: `${json.stars} (${json.rating})`,
+                                link: `https://www.codechef.com/users/${json.username}`,
+                                stats: `${json.problemsSolved} Problems Solved`,
+                                description: {
+                                    username: json.username,
+                                    rating: json.rating,
+                                    stars: json.stars,
+                                },
+                            }
+                            : ach
+                    )
+                );
+            } catch (error) {
+                console.error('Failed to fetch CodeChef data', error);
+            }
+        };
+
+        // Fetch LeetCode data
         const fetchLeetCodeData = async () => {
             try {
                 const res = await fetch('https://leetscan.vercel.app/Bot_Durgesh');
-                const json: LeetCodeData = await res.json();
-
+                const json = await res.json();
                 const badgeName = json.contestRanking?.badge?.name || 'Unrated';
-                const rating = typeof json.contestRanking?.rating === "number" ? Math.round(json.contestRanking.rating) : 'N/A';
+                // Floor the rating value
+                const rating = typeof json.contestRanking?.rating === "number"
+                    ? Math.floor(json.contestRanking.rating)
+                    : 'N/A';
 
                 setAchievements((prev) =>
                     prev.map((ach) =>
                         ach.title === 'LeetCode'
                             ? {
                                 ...ach,
-                                rating: `${badgeName}  (${rating})`,
+                                rating: `${badgeName} (${rating})`,
                                 link: `https://leetcode.com/${json.username}`,
                                 stats: `${json.totalSolved} Problems Solved`,
                                 description: {
                                     username: json.username,
-                                    rating: `${rating}`,
-                                    stars: `${badgeName}`,
+                                    rating: rating.toString(),
+                                    stars: badgeName,
                                 },
                             }
                             : ach
@@ -148,6 +178,7 @@ const Achievements = () => {
             }
         };
 
+        fetchCodeChefData();
         fetchLeetCodeData();
     }, []);
     return (

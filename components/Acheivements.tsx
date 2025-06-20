@@ -178,6 +178,59 @@ const Achievements = () => {
             }
         };
 
+        const fetchCodeforcesData = async () => {
+            try {
+                const res = await fetch('https://codeforces.com/api/user.info?handles=bot_durgesh1&checkHistoricHandles=false');
+                const json = await res.json();
+                if (json.status === "OK" && json.result && json.result.length > 0) {
+                    const user = json.result[0];
+                    setAchievements((prev) =>
+                        prev.map((ach) =>
+                            ach.title === 'Codeforces'
+                                ? {
+                                    ...ach,
+                                    rating: `${user.rank} (${user.rating})`,
+                                    link: `https://codeforces.com/profile/${user.handle}`,
+                                    description: {
+                                        username: user.handle,
+                                        rating: user.rating.toString(),
+                                        stars: user.rank,
+                                    },
+                                }
+                                : ach
+                        )
+                    );
+                }
+            } catch (error) {
+                console.error('Failed to fetch Codeforces data', error);
+            }
+        };
+
+        const fetchCodeforcesProblemsSolved = async () => {
+            try {
+                const res = await fetch('https://codeforces.com/api/user.status?handle=BOT_DURGESH1&from=1');
+                const json = await res.json();
+                if (json.status === "OK" && Array.isArray(json.result)) {
+                    const problemsSolved = (json.result as any[]).filter(
+                        (sub) => sub && sub.verdict === "OK"
+                    ).length;
+                    setAchievements((prev) =>
+                        prev.map((ach) =>
+                            ach.title === 'Codeforces'
+                                ? {
+                                    ...ach,
+                                    stats: `${problemsSolved} Problems Solved`,
+                                }
+                                : ach
+                        )
+                    );
+                }
+            } catch (error) {
+                console.error('Failed to fetch Codeforces problems solved', error);
+            }
+        };
+        fetchCodeforcesProblemsSolved();
+        fetchCodeforcesData();
         fetchCodeChefData();
         fetchLeetCodeData();
     }, []);

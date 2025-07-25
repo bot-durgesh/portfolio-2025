@@ -76,7 +76,7 @@ export const projects = [
     des: "InterviewPrep is an AI-powered platform that simulates real interviews, analyzes your responses, and gives instant feedback to help you confidently crack any interview.",
     img: "/InterviewPrep.png",
     iconLists: ["/next.svg", "/re.svg", "/ts.svg", "/tail.svg", "/fm.svg"],
-    link: "",
+    link: "https://interview-prep-agent.vercel.app",
   },
   {
     id: 2,

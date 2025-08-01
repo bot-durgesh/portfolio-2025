@@ -89,7 +89,7 @@ function MacBookExperience() {
                   <div style={{ marginBottom: '20px', fontSize: '40px' }}>
                     <span style={{ color: '#ec4899' }}>Full Stack Developer</span>{' '}
                     <span style={{ color: '#ffffff' }}>&</span>{' '}
-                    <span style={{ color: '#10b981' }}>Problem Solver</span>
+                    <span style={{ color: '#10b981' }}>Competitive Programmer</span>
                   </div>
 
                   <div style={{ fontSize: '40px', color: '#8b5cf6' }}>

@@ -82,7 +82,7 @@ function MacBookExperience() {
                 <div style={{ textAlign: 'center', lineHeight: '2' }}>
                   <div style={{ marginBottom: '20px', fontSize: '40px' }}>
                     <span style={{ color: '#f59e0b' }}>Hello World!</span>{' '}
-                    <span style={{ color: '#ffffff' }}>I'm</span>{' '}
+                    <span style={{ color: '#ffffff' }}>I&apos;m</span>{' '}
                     <span style={{ color: '#3b82f6' }}>Durgesh Ankoji</span>
                   </div>
 

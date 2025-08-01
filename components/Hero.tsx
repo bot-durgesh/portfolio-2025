@@ -3,6 +3,7 @@ import MagicButton from './ui/MagicButton';
 import { TextGenerateEffect } from './ui/TextGenerateEffect'
 import { cn } from "@/utils/cn";
 import { FaLocationArrow } from "react-icons/fa";
+import Laptop3D from './ui/Laptop3D';
 
 const Hero = () => {
   return (
@@ -24,19 +25,20 @@ const Hero = () => {
         />
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black-100" />
 
-        <div className="relative z-10 flex justify-center">
-          <div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
-            <h2 className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
+          {/* Left Side - Content */}
+          <div className="flex-1 max-w-[50vw] flex flex-col items-start justify-center">
+            <h2 className="uppercase tracking-widest text-xs text-blue-100 max-w-80 mb-4">
               Dynamic magic with Next.JS
             </h2>
 
             <TextGenerateEffect
-              className="text-center text-[40px] md:text-5xl lg:text-6xl"
+              className="text-left text-[32px] md:text-4xl lg:text-5xl mb-6"
               words="Transforming Concepts into Seamless User Experiences"
             />
 
-            <p className="text-center md:tracking-wider font-bold mb-4 text-sm md:text-lg lg:text-2xl">
-              Hi, I am Durgesh.
+            <p className="text-left md:tracking-wider font-bold mb-6 text-sm md:text-lg lg:text-xl">
+              Hi, I am Durgesh, a Full Stack Developer passionate about creating innovative web solutions.
             </p>
 
             <a href="#about">
@@ -46,6 +48,11 @@ const Hero = () => {
                 position='right'
               />
             </a>
+          </div>
+
+          {/* Right Side - 3D Laptop */}
+          <div className="mt-40 flex-1 h-[400px] md:h-[500px] lg:h-[600px] flex items-center justify-center">
+            <Laptop3D />
           </div>
         </div>
       </div>

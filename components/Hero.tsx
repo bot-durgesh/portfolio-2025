@@ -28,9 +28,7 @@ const Hero = () => {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 flex items-center justify-between">
           {/* Left Side - Content */}
           <div className="flex-1 max-w-[50vw] flex flex-col items-start justify-center">
-            <h2 className="uppercase tracking-widest text-xs text-blue-100 max-w-80 mb-4">
-              Dynamic magic with Next.JS
-            </h2>
+            
 
             <TextGenerateEffect
               className="text-left text-[32px] md:text-4xl lg:text-5xl mb-6"

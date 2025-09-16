@@ -310,6 +310,7 @@ const Achievements = () => {
 
 
 
+
                             {/* Stats */}
                             <div className="mb-4 p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                                 <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">

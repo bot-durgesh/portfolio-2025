@@ -115,6 +115,22 @@ const Achievements = () => {
             stats: 'Top 3',
             bgImage: '/backgrounds/trophy-bg.jpg',
         },
+        {
+            id: 6,
+            title: 'CP With Geeks-GFG Winner',
+            rating: '🏆 1st Prize Winner',
+            description: {
+                username: 'your-username',
+                rating: '1967',
+                stars: '4⭐',
+            },
+            desc: 'Winner of CP with GEEKS 2025 Organized by GeeksForGeeks VIIT over 350 participants.',
+            icon: '/tropy-1.jpg',
+            link: '#',
+            bgGradient: 'from-cyan-400 via-teal-500 to-green-500',
+            stats: 'Top 1',
+            bgImage: '/backgrounds/trophy-bg.jpg',
+        },
     ]);
 
     useEffect(() => {

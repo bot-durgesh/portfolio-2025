@@ -72,6 +72,14 @@ export const gridItems = [
 export const projects = [
   {
     id: 1,
+    title: "AI-Powered Content Management Platform",
+    des: "Developed a responsive AI-powered content management system, automating content creation and integrating secure authentication, analytics, and optimized media delivery.",
+    img: "/creatr.png",
+    iconLists: ["/next.svg", "/re.svg", "/ts.svg", "/tail.svg", "/fm.svg"],
+    link: "https://creatr-one.vercel.app/",
+  },
+  {
+    id: 2,
     title: "InterviewPrep: Countdown to Your Dream Job",
     des: "InterviewPrep is an AI-powered platform that simulates real interviews, analyzes your responses, and gives instant feedback to help you confidently crack any interview.",
     img: "/InterviewPrep.png",
@@ -79,7 +87,7 @@ export const projects = [
     link: "https://interview-prep-agent.vercel.app",
   },
   {
-    id: 2,
+    id: 3,
     title: "Contestify: The Interstellar Contest Tracker",
     des: "Contestify is your mission control for competitive programming. Get real-time alerts and never miss a contest across the coding universe.",
     img: "/Contestify.png",
@@ -87,21 +95,14 @@ export const projects = [
     link: "https://contestify-web.vercel.app",
   },
   {
-    id: 3,
+    id: 4,
     title: "Nikko: The Future of Virtual Assistance",
     des: "Nikko, a voice-enabled virtual assistant with a web interface to open social media platforms and perform Google searches.",
     img: "/virtual-assistance.png",
     iconLists: ["/html.png", "/css.png", "/js.png", "/tail.svg", "/fm.svg"],
     link: "https://bot-durgesh.github.io/Virtual-Assistant",
   },
-  {
-    id: 4,
-    title: "Real-Time Weather App: Powered by OpenWeatherMap API",
-    des: "Developed a responsive weather app, integrating OpenWeatherMap API for real-time updates and error handling for user inputs.",
-    img: "/weather.png",
-    iconLists: ["/html.png", "/css.png", "/js.png", "/tail.svg", "/fm.svg"],
-    link: "https://bot-durgesh.github.io/find-weather",
-  },
+  
   
 ];
 

@@ -127,7 +127,7 @@ export const workExperience = [
   },
   {
     id: 3,
-    title: "CP / DSA Lead",
+    title: "Organizer",
     desc: "CP/DSA Lead guiding peers in mastering competitive programming and data structures through problem-solving sessions, contests, and hands-on mentorship",
     className: "md:col-span-2", // change to md:col-span-2
     thumbnail: "/gdg.png",

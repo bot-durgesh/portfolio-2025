@@ -113,22 +113,22 @@ export const projects = [
 export const workExperience = [
   {
     id: 1,
-    title: "SDE Intern",
-    desc: "Currently working as an SDE Intern at Bluestock Fintech.",
+    title: "Cyber Analyst Intern",
+    desc: "Incoming Summer Intern at Visa",
     className: "md:col-span-2",
-    thumbnail: "/bluestock.png",
+    thumbnail: "/visa.png",
   },
   {
     id: 2,
-    title: "Python Developer",
-    desc: "Python Developer at Innobyte Services, building scalable backend solutions, integrating APIs, and optimizing code for performance.",
+    title: "Mentor Intern",
+    desc: "Mentor Intern at Codhurdle, mentoring in competitive programming, strengthening problem-solving skills, and optimizing DSA approaches.",
     className: "md:col-span-2", // change to md:col-span-2
-    thumbnail: "/innobyte1.png",
+    thumbnail: "/codehurdle.png",
   },
   {
     id: 3,
     title: "Organizer",
-    desc: "CP/DSA Lead guiding peers in mastering competitive programming and data structures through problem-solving sessions, contests, and hands-on mentorship",
+    desc: "Driving a community of developers through technical events, mentorship, and collaborative learning initiatives.",
     className: "md:col-span-2", // change to md:col-span-2
     thumbnail: "/gdg.png",
   },

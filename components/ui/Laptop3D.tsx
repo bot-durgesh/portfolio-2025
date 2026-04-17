@@ -1,199 +1,254 @@
 'use client';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, OrbitControls, Sparkles, Environment, MeshDistortMaterial, Sphere, Box, Torus } from '@react-three/drei';
-import { Suspense, useRef } from 'react';
+import { OrbitControls, Environment, Float, MeshReflectorMaterial, RoundedBox } from '@react-three/drei';
+import { Suspense, useRef, useMemo } from 'react';
 import * as THREE from 'three';
 
-function FloatingCodeSphere() {
-  const sphereRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (sphereRef.current) {
-      sphereRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
-      sphereRef.current.rotation.y += 0.005;
+// ─── Screen glow plane ───────────────────────────────────────────────────────
+function ScreenGlow() {
+  const glowRef = useRef<THREE.Mesh>(null);
+  useFrame(({ clock }) => {
+    if (glowRef.current) {
+      const mat = glowRef.current.material as THREE.MeshStandardMaterial;
+      mat.emissiveIntensity = 1.15 + Math.sin(clock.elapsedTime * 1.4) * 0.16;
+    }
+  });
+  return (
+    <mesh ref={glowRef} position={[0, 0, 0.012]}>
+      <planeGeometry args={[2.55, 1.62]} />
+      <meshStandardMaterial
+        color="#07101d"
+        emissive="#00b8ff"
+        emissiveIntensity={1.15}
+        roughness={0.05}
+        metalness={0}
+      />
+    </mesh>
+  );
+}
+
+// ─── Stylized code bars (no external font dependency) ───────────────────────
+const CODE_BARS = [
+  { width: 1.35, x: -0.58, y: 0.58, color: '#c9d1d9' },
+  { width: 1.62, x: -0.45, y: 0.42, color: '#79c0ff' },
+  { width: 1.48, x: -0.52, y: 0.28, color: '#79c0ff' },
+  { width: 0.82, x: -0.85, y: 0.14, color: '#d2a8ff' },
+  { width: 1.05, x: -0.73, y: 0.00, color: '#ff7b72' },
+  { width: 0.22, x: -1.13, y: -0.14, color: '#c9d1d9' },
+  { width: 1.76, x: -0.38, y: -0.34, color: '#3d4a5a' },
+  { width: 0.34, x: -1.05, y: -0.52, color: '#00ff8c' },
+];
+
+function ScreenContent() {
+  return (
+    <group position={[0, 0, 0.025]}>
+      {/* scanline tint strips */}
+      {Array.from({ length: 14 }).map((_, i) => (
+        <mesh key={i} position={[0, 0.72 - i * 0.12, 0.001]}>
+          <planeGeometry args={[2.5, 0.06]} />
+          <meshBasicMaterial color="#00d4ff" transparent opacity={0.08} />
+        </mesh>
+      ))}
+      {/* pseudo code bars */}
+      {CODE_BARS.map((bar, i) => (
+        <mesh key={i} position={[bar.x, bar.y, 0.003]}>
+          <planeGeometry args={[bar.width, 0.045]} />
+          <meshBasicMaterial color={bar.color} transparent opacity={0.95} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── Laptop lid (screen half) ─────────────────────────────────────────────────
+function LaptopLid({ lidAngle }: { lidAngle: number }) {
+  return (
+    <group rotation={[lidAngle, 0, 0]} position={[0, 0.06, -1.32]}>
+      {/* outer shell */}
+      <RoundedBox args={[2.8, 1.85, 0.09]} radius={0.06} smoothness={7} position={[0, 0.925, 0]}>
+        <meshStandardMaterial color="#c6cad4" roughness={0.18} metalness={0.95} />
+      </RoundedBox>
+
+      {/* screen bezel inset */}
+      <mesh position={[0, 0.925, 0.048]}>
+        <planeGeometry args={[2.68, 1.73]} />
+        <meshStandardMaterial color="#0a0d14" roughness={0.24} metalness={0.1} />
+      </mesh>
+
+      {/* screen surface */}
+      <group position={[0, 0.925, 0.05]}>
+        <ScreenGlow />
+        <ScreenContent />
+      </group>
+
+      {/* subtle screen edge glow */}
+      <mesh position={[0, 0.925, 0.053]}>
+        <planeGeometry args={[2.55, 1.62]} />
+        <meshBasicMaterial color="#00d4ff" transparent opacity={0.08} />
+      </mesh>
+
+      {/* Apple-style logo dot on back */}
+      <mesh position={[0, 0.925, -0.048]}>
+        <circleGeometry args={[0.14, 32]} />
+        <meshStandardMaterial color="#4e5362" roughness={0.08} metalness={1} emissive="#00d4ff" emissiveIntensity={0.12} />
+      </mesh>
+    </group>
+  );
+}
+
+// ─── Laptop base (keyboard half) ─────────────────────────────────────────────
+function LaptopBase() {
+  const keyCols = 13;
+  const keyRows = 4;
+  const keys = useMemo(() => {
+    const list = [];
+    for (let r = 0; r < keyRows; r++) {
+      for (let c = 0; c < keyCols; c++) {
+        list.push({
+          x: -1.17 + c * 0.195,
+          z: -0.72 + r * 0.21,
+          w: r === keyRows - 1 && c === 5 ? 0.78 : 0.155,
+        });
+      }
+    }
+    return list;
+  }, []);
+
+  return (
+    <group>
+      {/* base shell */}
+      <RoundedBox args={[2.8, 0.14, 2.7]} radius={0.05} smoothness={7} position={[0, 0, 0]}>
+        <meshStandardMaterial color="#c7cbd6" roughness={0.16} metalness={0.96} />
+      </RoundedBox>
+
+      {/* top deck */}
+      <mesh position={[0, 0.072, 0]}>
+        <planeGeometry args={[2.76, 2.66]} />
+        <meshStandardMaterial color="#111620" roughness={0.22} metalness={0.72} />
+      </mesh>
+
+      {/* keyboard plate */}
+      <mesh position={[0, 0.075, 0.1]}>
+        <planeGeometry args={[2.55, 1.78]} />
+        <meshStandardMaterial color="#0e121b" roughness={0.36} metalness={0.45} />
+      </mesh>
+
+      {/* individual key caps */}
+      {keys.map((k, i) => (
+        <RoundedBox
+          key={i}
+          args={[k.w, 0.025, 0.165]}
+          radius={0.025}
+          smoothness={6}
+          position={[k.x, 0.088, k.z + 0.08]}
+        >
+          <meshStandardMaterial color="#1b2030" roughness={0.32} metalness={0.62} />
+        </RoundedBox>
+      ))}
+
+      {/* trackpad */}
+      <RoundedBox args={[0.85, 0.008, 0.58]} radius={0.03} smoothness={6} position={[0, 0.076, 0.88]}>
+        <meshStandardMaterial color="#3a4152" roughness={0.08} metalness={0.92} />
+      </RoundedBox>
+
+      {/* bottom rubber feet */}
+      {[[-1.2, 1.15], [1.2, 1.15], [-1.2, -1.15], [1.2, -1.15]].map(([x, z], i) => (
+        <mesh key={i} position={[x, -0.075, z]}>
+          <cylinderGeometry args={[0.09, 0.09, 0.02, 16]} />
+          <meshStandardMaterial color="#222" roughness={0.9} metalness={0} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ─── Reflection floor ─────────────────────────────────────────────────────────
+function Floor() {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.85, 0]}>
+      <planeGeometry args={[14, 14]} />
+      <MeshReflectorMaterial
+        blur={[0, 0]}
+        resolution={1024}
+        mixBlur={0.1}
+        mixStrength={24}
+        roughness={0.52}
+        depthScale={1.2}
+        minDepthThreshold={0.4}
+        maxDepthThreshold={1.4}
+        color="#0f1220"
+        metalness={0.75}
+        mirror={0.25}
+      />
+    </mesh>
+  );
+}
+
+// ─── Full laptop assembled ────────────────────────────────────────────────────
+function Laptop() {
+  const groupRef = useRef<THREE.Group>(null);
+  const lidAngle = -Math.PI * 0.48; // ~86° open
+
+  useFrame(({ clock }) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(clock.elapsedTime * 0.35) * 0.18;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <Sphere ref={sphereRef} args={[1, 64, 64]} scale={1}>
-        <MeshDistortMaterial
-          color="#8b5cf6"
-          attach="material"
-          distort={0.3}
-          speed={2}
-          roughness={0.2}
-          metalness={0.8}
-        />
-      </Sphere>
+    <Float speed={1.4} floatIntensity={0.22} rotationIntensity={0.05}>
+      <group ref={groupRef} rotation={[0.14, 0.38, 0]} scale={1.22}>
+        <LaptopBase />
+        <LaptopLid lidAngle={lidAngle} />
+      </group>
     </Float>
   );
 }
 
-function CodeRings() {
-  const ring1Ref = useRef<THREE.Mesh>(null);
-  const ring2Ref = useRef<THREE.Mesh>(null);
-  const ring3Ref = useRef<THREE.Mesh>(null);
-
-  useFrame(() => {
-    if (ring1Ref.current) ring1Ref.current.rotation.z += 0.01;
-    if (ring2Ref.current) ring2Ref.current.rotation.z -= 0.015;
-    if (ring3Ref.current) ring3Ref.current.rotation.z += 0.008;
-  });
-
-  return (
-    <group>
-      <mesh ref={ring1Ref} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.8, 0.03, 16, 100]} />
-        <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={0.5} />
-      </mesh>
-      <mesh ref={ring2Ref} rotation={[Math.PI / 2, 0, Math.PI / 4]}>
-        <torusGeometry args={[2, 0.03, 16, 100]} />
-        <meshStandardMaterial color="#8b5cf6" emissive="#8b5cf6" emissiveIntensity={0.5} />
-      </mesh>
-      <mesh ref={ring3Ref} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-        <torusGeometry args={[2.2, 0.03, 16, 100]} />
-        <meshStandardMaterial color="#ec4899" emissive="#ec4899" emissiveIntensity={0.5} />
-      </mesh>
-    </group>
-  );
-}
-
-function FloatingShapes() {
-  return (
-    <group>
-      {/* Wireframe Cube */}
-      <Float speed={1.5} rotationIntensity={1.5} floatIntensity={1} position={[-2, 1.5, 0]}>
-        <Box args={[0.5, 0.5, 0.5]}>
-          <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={0.5} wireframe />
-        </Box>
-      </Float>
-
-      {/* Torus */}
-      <Float speed={1.8} rotationIntensity={1} floatIntensity={1.2} position={[2, -0.8, 0.5]}>
-        <Torus args={[0.4, 0.15, 16, 32]}>
-          <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={0.5} />
-        </Torus>
-      </Float>
-
-      {/* Solid Cube */}
-      <Float speed={2} rotationIntensity={0.8} floatIntensity={1.3} position={[1.5, 1.5, -0.5]}>
-        <Box args={[0.4, 0.4, 0.4]}>
-          <meshStandardMaterial color="#ec4899" emissive="#ec4899" emissiveIntensity={0.5} />
-        </Box>
-      </Float>
-
-      {/* Wireframe Sphere */}
-      <Float speed={1.6} rotationIntensity={2} floatIntensity={0.8} position={[-1.5, -1.5, 0.3]}>
-        <Sphere args={[0.35, 32, 32]}>
-          <meshStandardMaterial color="#f59e0b" emissive="#f59e0b" emissiveIntensity={0.5} wireframe />
-        </Sphere>
-      </Float>
-
-      {/* Small Octahedron */}
-      <Float speed={1.4} rotationIntensity={1.3} floatIntensity={1.1} position={[-2, -0.5, -0.5]}>
-        <mesh>
-          <octahedronGeometry args={[0.35]} />
-          <meshStandardMaterial color="#06b6d4" emissive="#06b6d4" emissiveIntensity={0.5} />
-        </mesh>
-      </Float>
-
-      {/* Small Tetrahedron */}
-      <Float speed={1.7} rotationIntensity={1.8} floatIntensity={0.9} position={[1.8, -1.3, -0.3]}>
-        <mesh>
-          <tetrahedronGeometry args={[0.3]} />
-          <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={0.5} wireframe />
-        </mesh>
-      </Float>
-    </group>
-  );
-}
-
-function FloatingParticles() {
-  return (
-    <group>
-      <Sparkles count={80} scale={6} size={2} speed={0.3} color="#8b5cf6" />
-      <Sparkles count={40} scale={5} size={1.5} speed={0.4} color="#3b82f6" />
-      <Sparkles count={25} scale={7} size={2.5} speed={0.2} color="#ec4899" />
-    </group>
-  );
-}
-
-function Scene3D() {
+// ─── Scene ────────────────────────────────────────────────────────────────────
+function Scene() {
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#8b5cf6" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#3b82f6" />
-      <spotLight position={[0, 5, 0]} intensity={0.8} angle={0.6} penumbra={1} color="#ec4899" />
+      {/* ambient + directional */}
+      <ambientLight intensity={0.38} />
+      <directionalLight position={[4, 6, 3]} intensity={1.8} color="#ffffff" castShadow />
+      <directionalLight position={[-4, 2, -2]} intensity={0.7} color="#7dd3fc" />
+      {/* screen spill glow */}
+      <pointLight position={[0, 1.2, 0.6]} intensity={2.2} color="#00d4ff" distance={4.5} decay={2} />
+      <pointLight position={[0, 0.8, 0.4]} intensity={1.1} color="#38bdf8" distance={3.5} decay={2} />
 
-      <FloatingCodeSphere />
-      <CodeRings />
-      <FloatingShapes />
-      <FloatingParticles />
+      <Laptop />
+      <Floor />
 
-      <Environment preset="night" />
-      <OrbitControls 
-        enableZoom={false} 
+      <Environment preset="city" />
+      <OrbitControls
+        enableZoom={false}
         enablePan={false}
-        minPolarAngle={Math.PI / 2.5}
-        maxPolarAngle={Math.PI / 1.8}
-        minAzimuthAngle={-Math.PI / 4}
-        maxAzimuthAngle={Math.PI / 4}
+        minPolarAngle={Math.PI / 2.8}
+        maxPolarAngle={Math.PI / 2.1}
+        minAzimuthAngle={-Math.PI / 5}
+        maxAzimuthAngle={Math.PI / 5}
         autoRotate
-        autoRotateSpeed={0.3}
-        target={[0, 0, 0]}
+        autoRotateSpeed={0.45}
       />
     </>
   );
 }
 
-function Loader() {
+// ─── Export ───────────────────────────────────────────────────────────────────
+export default function Laptop3D() {
   return (
-    <div style={{
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      color: '#8b5cf6',
-      fontSize: '20px',
-      fontFamily: 'monospace',
-      textAlign: 'center'
-    }}>
-      <div className="animate-pulse">Loading Experience...</div>
-    </div>
-  );
-}
-
-export default function Hero3D() {
-  return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full">
       <Canvas
-        camera={{ 
-          position: [0, 0, 6], 
-          fov: 50,
-          near: 0.1,
-          far: 1000
-        }}
-        className="w-full h-full"
+        shadows
+        dpr={[1, 2]}
+        camera={{ position: [0, 1.55, 4.2], fov: 34, near: 0.1, far: 100 }}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
         <Suspense fallback={null}>
-          <Scene3D />
+          <Scene />
         </Suspense>
       </Canvas>
-      <Suspense fallback={<Loader />}>
-        <div style={{ display: 'none' }} />
-      </Suspense>
-
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-      `}</style>
     </div>
   );
 }

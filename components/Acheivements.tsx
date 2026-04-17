@@ -72,13 +72,13 @@ const Achievements = () => {
             title: 'Codeforces',
             rating: 'Specialist (1560)',
             description: {
-                username: 'bot_durgesh1',
+                username: 'Durgesh_Bot',
                 rating: '1560',
-                stars: 'Specialist',
+                stars: 'Expert',
             },
             desc: "",
             icon: '/CF.jpg',
-            link: 'https://codeforces.com/profile/bot_durgesh1',
+            link: 'https://codeforces.com/profile/Durgesh_Bot',
             bgGradient: 'from-blue-500 to-cyan-500',
             stats: '450 Problems Solved',
             bgImage: '/backgrounds/codeforces-bg.jpg',
@@ -196,7 +196,7 @@ const Achievements = () => {
 
         const fetchCodeforcesData = async () => {
             try {
-                const res = await fetch('https://codeforces.com/api/user.info?handles=bot_durgesh1&checkHistoricHandles=false');
+                const res = await fetch('https://codeforces.com/api/user.info?handles=Durgesh_Bot&checkHistoricHandles=false');
                 const json = await res.json();
                 if (json.status === "OK" && json.result && json.result.length > 0) {
                     const user = json.result[0];
@@ -224,7 +224,7 @@ const Achievements = () => {
 
         const fetchCodeforcesProblemsSolved = async () => {
             try {
-                const res = await fetch('https://codeforces.com/api/user.status?handle=BOT_DURGESH1&from=1');
+                const res = await fetch('https://codeforces.com/api/user.status?handle=Durgesh_Bot&from=1');
                 const json = await res.json();
                 if (json.status === "OK" && Array.isArray(json.result)) {
                     const problemsSolved = (json.result as any[]).filter(

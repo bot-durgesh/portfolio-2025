@@ -50,7 +50,7 @@ const Hero = () => {
 
           {/* Right Side - 3D Laptop */}
           <div className="mt-40 flex-1 h-[400px] md:h-[500px] lg:h-[600px] flex items-center justify-center">
-            <Laptop3D />
+            {/* <Laptop3D /> */}
           </div>
         </div>
       </div>
